@@ -15,4 +15,12 @@ else:
     sys.exit()
 
 game = Board()
+
+# 26-06-Tamim Remove Middle Elements
+game.remove(4,4)
+game.remove(4,5)
+# 26-06-Tamim Remove Middle Elements End
+
 game.print()
+
+# 18-06-NR Creating Initial Promt End
