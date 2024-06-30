@@ -1,3 +1,4 @@
+import copy
 class Board:
     # 28-06-Tamim: Defining jumping distance for player and opponent pieces
     DIR1 = [[0,1], [0,-1], [-1, 0], [1, 0]]
@@ -136,4 +137,50 @@ class Board:
                     c2 -= 2       
         return Moves    
     # 28-06-Tamim Ending Board Class
+
+    # 30-06-NR Starting Board Class
+    # Method for returning move length difference
+    def staticEvaluation(self, player):
+        if player == 'X':
+            opponent = 'O'
+        else:
+            opponent = 'X'
+        return len(self.listMoves(player)) - len(self.listMoves(opponent))
+    
+    # the minimax function
+    # since the depth is in multiple of 2, even => computer (max), odd => user (min)
+    @staticmethod
+    def minimax(board, player, depth, alpha, beta):
+        if player == 'X':
+            opponent = 'O'
+        else:
+            opponent = 'X'
+        # end, perform static evaluation
+        if depth == 1:
+            return (board.staticEvaluation(player))
+        # max node 
+        if depth %2 == 0:
+            moves = board.listMoves(player)
+            for curMove in moves:
+                next_board = copy.deepcopy(board)
+                next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
+                bv = Board.minimax(next_board, opponent, depth - 1, alpha, beta)
+                if bv > alpha:
+                    alpha = bv
+                if alpha >= beta:
+                    return beta
+            return alpha
+        # min node
+        else:
+            moves = board.listMoves(opponent)            
+            for curMove in moves:
+                next_board = copy.deepcopy(board)
+                next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1]) 
+                bv = Board.minimax(next_board, player, depth - 1, alpha, beta)
+                if bv < beta:
+                    beta = bv
+                if beta <= alpha:
+                    return alpha           
+            return beta
+    # 30-06-NR Ending Board Class
     
