@@ -1,20 +1,25 @@
-from A_Star import AStar
-from Genetic import Genetic
+from Fuzzy import FuzzyLogic
+from datetime import datetime
+import time
 
-heuristic_matrix = []
-matrix_row = []
-for i in range(9):
-    ans = Genetic.main()
-    matrix_row.append(ans)
-    if(i+1)%3==0:
-        heuristic_matrix.append(matrix_row)
-        matrix_row = []
+start_time = time.time()
+now = datetime.now()
+seconds = now.second
+milliseconds = now.microsecond // 1000  # converting microseconds to milliseconds
 
-print(heuristic_matrix)
-astar = AStar()
-cost = astar.find_path_cost(heuristic_matrix)
+fuzzy_logic = FuzzyLogic()
+new_cog = int(fuzzy_logic.compute_new_cog(seconds, milliseconds))
+print(new_cog)
 
-if cost == -1:
-    print("No path found!")
-else:
-    print(f"Total cost: {cost}")
+print(f"Current seconds: {seconds}")
+print(f"Current milliseconds: {milliseconds}")
+
+depth = new_cog % 3
+depth = depth + 3
+
+print(depth)
+
+end_time1 = time.time()
+
+time_difference1 = end_time1 - start_time
+print(time_difference1*1000)

@@ -3,6 +3,9 @@ import copy
 from Board import Board # Using the Board class form board.py
 from Genetic import Genetic
 from A_Star import AStar
+from Fuzzy import FuzzyLogic
+from datetime import datetime
+import time
 
 # 18-06-NR Creating Initial Promt
 count = 0
@@ -16,10 +19,11 @@ else:
     print("\nInvalid Input\n")
     sys.exit()
 
-print("\n1) Minimax Algortihm with Alpha Beta Pruning")
-print("2) Genetic Algorithm & A Star Algorithm")
+print("\nChoose Preffered Mode:")
+print("1) Minimax Algortihm with Alpha Beta Pruning + Fuzzy Logic for selecting depth")
+print("2) Genetic Algorithm + A Star Algorithm")
 mode = int(input("\nEnter The Preffered Mode: "))
-if(mode > 3 or mode <=0):
+if(mode > 2 or mode <=0):
     print("\nInvalid Input\n")
     sys.exit()
 
@@ -43,17 +47,28 @@ if(mode == 1):
                 print("\nPlayer Won\n")
                 exit()        
             print("\nComputer's Turn: ", end = " ")
+            depth = 0
             bestVal = - sys.maxsize
+            start_time = time.time()
             for move in moves:
                 alpha = -1000
                 beta = 1000
                 temp = copy.deepcopy(game)
                 temp.move(move[0][0], move[0][1], move[1][0], move[1][1])
-                cbv = Board.minimax(temp, computer, 5, alpha, beta)       
+                now = datetime.now()
+                seconds = now.second
+                milliseconds = now.microsecond // 1000  # converting microseconds to milliseconds
+                fuzzy_logic = FuzzyLogic()
+                new_cog = int(fuzzy_logic.compute_new_cog(seconds, milliseconds))
+                depth = new_cog % 2
+                depth = depth + 4
+                cbv = Board.minimax(temp, computer, depth, alpha, beta)       
                 if cbv > bestVal:
                     bestVal = cbv
                     bestMove = move
-            print("Move " + str(bestMove[0]) + " to " + str(bestMove[1]))
+            end_time = time.time()
+            time_difference = end_time - start_time
+            print("Move " + str(bestMove[0]) + " to " + str(bestMove[1]) + " with depth: " + str(depth) + " with process time: {:.2f} ms\n".format(time_difference * 1000))
             game.move(bestMove[0][0], bestMove[0][1], bestMove[1][0], bestMove[1][1])   
         # player's turn
         else:
@@ -68,6 +83,7 @@ if(mode == 1):
             for i in range(len(moves)):
                 print(str(i+1) + ") Move " + str(moves[i][0]) + " to " + str(moves[i][1]))
             move = int(input("\nEnter the number of the move that you want to make: ")) - 1
+            print()
             if(move + 1 > len(moves) or move + 1 <= 0):
                 print("\nInvalid Input\n")
                 sys.exit()
