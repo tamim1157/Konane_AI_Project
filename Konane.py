@@ -2,6 +2,7 @@ import sys # Needed for exit
 import copy
 from Board import Board # Using the Board class form board.py
 from Genetic import Genetic
+from A_Star import AStar
 
 # 18-06-NR Creating Initial Promt
 count = 0
@@ -15,8 +16,8 @@ else:
     print("\nInvalid Input\n")
     sys.exit()
 
-print("\n1) Minimax")
-print("2) Genetic")
+print("\n1) Minimax Algortihm with Alpha Beta Pruning")
+print("2) Genetic Algorithm & A Star Algorithm")
 mode = int(input("\nEnter The Preffered Mode: "))
 if(mode > 3 or mode <=0):
     print("\nInvalid Input\n")
@@ -86,9 +87,18 @@ elif(mode == 2):
                 print("\nPlayer Won\n")
                 exit()        
             print("\nComputer's Turn: ", end = " ")
-            ans = Genetic.main()
-            ans = ans % len(moves)
-            bestMove = moves[ans]
+            heuristic_matrix = []
+            matrix_row = []
+            for i in range(9):
+                ans = Genetic.main()
+                matrix_row.append(ans)
+                if(i+1)%3==0:
+                    heuristic_matrix.append(matrix_row)
+                    matrix_row = []
+            astar = AStar()
+            cost = astar.find_path_cost(heuristic_matrix)
+            cost = cost % len(moves)
+            bestMove = moves[cost]
             print("Move " + str(bestMove[0]) + " to " + str(bestMove[1]))
             game.move(bestMove[0][0], bestMove[0][1], bestMove[1][0], bestMove[1][1])   
         # player's turn
